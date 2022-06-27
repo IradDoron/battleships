@@ -1,13 +1,17 @@
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { CurrShipContext } from '../CurrShipContext/CurrShipContext';
+import CellsDataContext from '../Board/CellsDataContext';
 
-const CELL_SIZE = 60;
+import { ACTIONS } from '../Board/Board';
+
+const CELL_SIZE = 30;
 
 const StyledCell = styled.div`
   width: ${CELL_SIZE}px;
   height: ${CELL_SIZE}px;
-  background-color: #bebebe;
   border: solid black;
+  background-color: ${(props) => props.bg};
 `;
 
 const STATES = {
@@ -17,6 +21,7 @@ const STATES = {
   FULL_HIT: 'fullHit',
   MISS_HIT: 'missHit',
   HAS_SHIP: 'hasShip',
+  POS_SHIP: 'posShip',
   DISABLE: 'disable',
 };
 
@@ -24,7 +29,7 @@ function getStyles(cellState) {
   switch (cellState) {
     case STATES.EMPTY: {
       return {
-        backgroundColor: 'white',
+        backgroundColor: '#dedede',
       };
     }
     case STATES.HOVER: {
@@ -47,6 +52,11 @@ function getStyles(cellState) {
         backgroundColor: 'blue',
       };
     }
+    case STATES.POS_SHIP: {
+      return {
+        backgroundColor: '#88f',
+      };
+    }
     case STATES.MISS_HIT: {
       return {
         backgroundColor: 'black',
@@ -60,33 +70,33 @@ function getStyles(cellState) {
   }
 }
 
-function Cell() {
+function Cell({ coord, boardState, dispatch, isEditModeOn, currShipIndex }) {
   const [currState, setCurrState] = useState(STATES.EMPTY);
-  const [currStyles, setCurrStyles] = useState({});
+  const { row, col } = coord;
 
   useEffect(() => {
-    setCurrStyles(getStyles(currState));
-  }, [currState]);
+    setCurrState(boardState[row][col].currState);
+  }, [boardState]);
+
+  function handleClick() {
+    dispatch({ type: ACTIONS.CLICK, payload: { row, col, isEditModeOn, currShipIndex } });
+  }
 
   function handleMouseEnter() {
-    if (currState === STATES.EMPTY) {
-      setCurrState(STATES.HOVER);
-    }
+    dispatch({ type: ACTIONS.MOUSE_ENTER, payload: { row, col, isEditModeOn, currShipIndex } });
   }
 
   function handleMouseLeave() {
-    if (currState === STATES.HOVER) {
-      setCurrState(STATES.EMPTY);
-    }
+    dispatch({ type: ACTIONS.MOUSE_LEAVE, payload: { row, col, isEditModeOn, currShipIndex } });
   }
 
   return (
     <StyledCell
-      onClick={() => setCurrState(STATES.HIT)}
+      bg={getStyles(currState).backgroundColor}
+      onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={currStyles}
-    ></StyledCell>
+    />
   );
 }
 

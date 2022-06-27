@@ -1,28 +1,21 @@
 import shipsBluePrint from '../../data/shipsBluePrint';
 import LegendCell from './LegendCell/LegendCell';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import LegendShip from './LegendShip/LegendShip';
 
 const LagendContainer = styled.section`
   background-color: #999;
 `;
 
-function setLegendShips(shipsBluePrint, cellElement) {
-  const allShips = [];
-  shipsBluePrint.forEach((shipBluePrint) => {
-    const ship = [];
-    for (let i = 0; i < shipBluePrint.size; i++) {
-      ship.push(cellElement);
-    }
-    allShips.push(ship);
-  });
-  return allShips;
-}
-
 function Legend() {
-  const [ships, setShips] = useState(setLegendShips(shipsBluePrint, <LegendCell />));
-  console.log(ships);
-  return <LagendContainer>{ships}</LagendContainer>;
+  return (
+    <LagendContainer>
+      {shipsBluePrint?.map((shipBluePrint, index) => {
+        return <LegendShip key={index} shipBluePrint={shipBluePrint} index={index} />;
+      })}
+    </LagendContainer>
+  );
 }
 
 export default Legend;

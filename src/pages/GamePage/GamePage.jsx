@@ -1,6 +1,5 @@
 import Board from '../../components/Board/Board';
 
-
 import styled from 'styled-components';
 
 const Flex_Container = styled.section`
@@ -11,10 +10,12 @@ const Flex_Container = styled.section`
 
 function GamePage() {
   return (
-    <Flex_Container>
-      <Board />
-      <Board />
-    </Flex_Container>
+    <>
+      <Flex_Container>
+        <Board />
+        <Board />
+      </Flex_Container>
+    </>
   );
 }
 
